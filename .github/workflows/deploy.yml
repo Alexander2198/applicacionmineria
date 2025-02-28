@@ -1,0 +1,49 @@
+name: CI/CD Pipeline for EcuAutoPredictor
+
+on:
+  push:
+    branches:
+       - main  # Se ejecutará cada vez que subas cambios a la rama main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v3
+
+      - name: Iniciar sesión en Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Construir y subir imagen Docker
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ecuautopredictor:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Desplegar en AWS EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Detener y eliminar el contenedor en ejecución (si existe)
+            sudo docker stop ecuautopredictor || true
+            sudo docker rm ecuautopredictor || true
+            
+            # Descargar la nueva imagen
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/ecuautopredictor:latest
+            
+            # Ejecutar el contenedor con Flask en el puerto 80
+            sudo docker run -d -p 80:5000 --name ecuautopredictor \
+              ${{ secrets.DOCKERHUB_USERNAME }}/ecuautopredictor:latest

@@ -1,20 +1,22 @@
-# Imagen base
+# Imagen base de Python 3.10
 FROM python:3.10
 
-# Establecer directorio de trabajo
+# Establecer el directorio de trabajo
 WORKDIR /app
 
-# Copiar archivos
-COPY requirements.txt requirements.txt
-COPY web_app/ web_app/
-COPY models/ models/
-COPY encoders/ encoders/
-
-# Instalar dependencias
+# Copiar dependencias y paquetes
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Exponer el puerto para Flask
+# Copiar el resto de los archivos de la aplicación
+COPY web_app/ web_app/
+COPY notebooks/models/ models/
+COPY notebooks/encoders/ encoders/
+COPY notebooks/data/ data/
+
+
+# Exponer el puerto 5000 para Flask
 EXPOSE 5000
 
-# Ejecutar la aplicación
+# Ejecutar Flask con Python
 CMD ["python", "web_app/app.py"]
