@@ -9,9 +9,9 @@ import os
 app = Flask(__name__)
 
 # Rutas absolutas dentro del contenedor
-MODEL_PATH = "models/modelo_xgboost.pkl"
-ENCODER_PATH = "encoders/encoders_xgboost.pkl"
-DATA_PATH = "data/archivo_unido_FINAL3.csv"
+MODEL_PATH = "../notebooks/models/modelo_xgboost.pkl"
+ENCODER_PATH = "../notebooks/ncoders/encoders_xgboost.pkl"
+DATA_PATH = "../notebooks/data/archivo_unido_FINAL3.csv"
 
 # Cargar el modelo entrenado y los encoders guardados
 modelo_rf = joblib.load(MODEL_PATH)
