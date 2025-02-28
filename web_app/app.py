@@ -57,7 +57,7 @@ def index():
         }
         form_data = data
 
-        # Crear un DataFrame con los datos ingresados
+        # Crear un DataFrame con los datos ingresadoss
         df_input = pd.DataFrame([data], columns=features)
         # Convertir campos numéricos
         df_input['Año'] = pd.to_numeric(df_input['Año'], errors='coerce')
