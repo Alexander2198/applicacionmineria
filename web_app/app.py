@@ -24,8 +24,7 @@ dropdown_options = {}
 for col in categorical_cols:
     dropdown_options[col] = list(encoders[col].classes_)
 
-# Generar un mapeo de Marca a Modelos usando el dataset (se asume que 'archivo_unido_FINAL3.csv' contiene estas columnas)
-#df_data = pd.read_csv('../notebooks/data/data_FINAL2.csv')
+
 df_data = pd.read_csv('/app/data/data_FINAL2.csv')
 
 marca_modelo_map = defaultdict(list)

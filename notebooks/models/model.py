@@ -6,20 +6,20 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import joblib
 import pickle
 
-# 1. Leer el dataset final
+
 df = pd.read_csv('../data/data_FINAL2.csv')
 
-# Convertir la variable objetivo "Precio" a numérico y eliminar registros sin precio
+
 df['Precio'] = pd.to_numeric(df['Precio'], errors='coerce')
 df = df.dropna(subset=['Precio'])
 
-# 2. Seleccionar la variable objetivo y las variables predictoras
+
 y = df['Precio']
 features = ['Marca', 'Modelo', 'Provincia', 'Año', 'Kilometraje', 
             'Transmisión', 'Dirección', 'Motor', 'Tracción', 'Color', 'Combustible']
 X = df[features]
 
-# 3. Aplicar Label Encoding a las columnas categóricas y guardar los encoders
+
 categorical_cols = ['Marca', 'Modelo', 'Provincia', 'Transmisión', 'Dirección', 'Tracción', 'Color', 'Combustible']
 X_encoded = X.copy()
 encoders = {}
@@ -36,7 +36,7 @@ with open('../encoders/encoders_xgboost.pkl', 'wb') as f:
 # 4. Dividir el dataset en conjuntos de entrenamiento y prueba (80% entrenamiento, 20% prueba)
 X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.2, random_state=89)
 
-# 5. Definir el modelo XGBoost con los mejores parámetros encontrados
+
 best_xgb = xgb.XGBRegressor(
     objective='reg:squarederror',
     random_state=82,
@@ -51,7 +51,7 @@ best_xgb = xgb.XGBRegressor(
 # Entrenar el modelo
 best_xgb.fit(X_train, y_train)
 
-# 6. Evaluar el modelo en el conjunto de prueba
+
 y_pred = best_xgb.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
 mae = mean_absolute_error(y_test, y_pred)
