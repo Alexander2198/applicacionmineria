@@ -30,7 +30,7 @@ for col in categorical_cols:
     encoders[col] = le  # Guardamos el encoder para la columna
 
 # Guardar los encoders en un archivo para usarlos en la predicción
-with open('../encoders/encoders_xgboost.pkl', 'wb') as f:
+with open('../encoders/encoders_xgboost2.pkl', 'wb') as f:
     pickle.dump(encoders, f)
 
 # 4. Dividir el dataset en conjuntos de entrenamiento y prueba (80% entrenamiento, 20% prueba)
@@ -39,15 +39,17 @@ X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.2,
 
 best_xgb = xgb.XGBRegressor(
     objective='reg:squarederror',
-    random_state=82,
-    colsample_bytree=0.7,
-    gamma=0,
-    learning_rate=0.1,
-    max_depth=5,
-    n_estimators=700,
-    subsample=0.8
+    colsample_bytree=0.8,  # Aumentamos el número de variables usadas en cada árbol
+    gamma=0.1,  # Permitimos más divisiones
+    learning_rate=0.025,  # Reducimos la tasa de aprendizaje para mejorar precisión
+    max_depth=4,  # Árboles más profundos para capturar más patrones
+    n_estimators=700,  # Más árboles para mejorar aprendizaje
+    subsample=0.8,  # Usamos más datos por cada árbol
+    alpha=0.5,  # Reducimos la regularización L1 para permitir más flexibilidad
+    lambda_=1.0,  # Reducimos la regularización L2 para evitar que los pesos sean demasiado pequeños
+    random_state=42,
+    n_jobs=-1
 )
-
 # Entrenar el modelo
 best_xgb.fit(X_train, y_train)
 
@@ -66,4 +68,4 @@ print("\n========\n")
 
 # 7. Guardar el modelo entrenado en un archivo
 joblib.dump(best_xgb, '../models/modelo_xgboost.pkl')
-print("✅ El modelo se ha guardado en '../models/modelo_xgboost.pkl'")
+print("✅ El modelo se ha guardado en '../models/modelo_xgboost_optimizado.pkl'")
