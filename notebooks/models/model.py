@@ -29,7 +29,7 @@ for col in categorical_cols:
     X_encoded[col] = le.fit_transform(X_encoded[col].astype(str))
     encoders[col] = le  # Guardamos el encoder para la columna
 
-# Guardar los encoders en un archivo para usarlos en la predicción
+# Guardar los encoders en un archivo para usarlo en la predicción
 with open('../encoders/encoders_xgboost2.pkl', 'wb') as f:
     pickle.dump(encoders, f)
 
