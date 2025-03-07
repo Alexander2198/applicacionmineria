@@ -50,7 +50,7 @@ best_xgb = xgb.XGBRegressor(
     random_state=42,
     n_jobs=-1
 )
-# Entrenar el modelo
+# Entrena el modelo
 best_xgb.fit(X_train, y_train)
 
 
