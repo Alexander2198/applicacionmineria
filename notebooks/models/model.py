@@ -33,7 +33,7 @@ for col in categorical_cols:
 with open('../encoders/encoders_xgboost2.pkl', 'wb') as f:
     pickle.dump(encoders, f)
 
-# 4. Dividir el dataset en conjuntos de entrenamiento y prueba (80% entrenamiento, 20% prueba)
+# 4. Dividir el dataset en conjuntos de ntrenamiento y prueba (80% entrenamiento, 20% prueba)
 X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.2, random_state=89)
 
 
