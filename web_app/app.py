@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler  # Importar scaler
 
 app = Flask(__name__)
 
-# Cargar el modelo, encoders y scaler
+# Cargar el modelo, encoders y scaler2
 modelo_rf = joblib.load('/app/models/Nmodelo_xgboost_optimizado99.pkl')
 
 with open('/app/encoders/Nencoders_xgboost99.pkl', 'rb') as f:
