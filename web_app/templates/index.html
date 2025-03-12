@@ -1,4 +1,4 @@
-<!doctype html>
+index: <!doctype html>
 <html>
 <head>
     <title>Predicción de Precio de Carros</title>
@@ -159,17 +159,6 @@
                                       </select>
                                   </div>
                                   <div class="field">
-                                      <label for="Dirección">Dirección:</label>
-                                      <select name="Dirección" id="Dirección" class="select2">
-                                          {% for option in dropdown_options['Dirección'] %}
-                                              <option value="{{ option }}"
-                                                  {% if form_data and form_data['Dirección'] == option %}selected{% endif %}>
-                                                  {{ option }}
-                                              </option>
-                                          {% endfor %}
-                                      </select>
-                                  </div>
-                                  <div class="field">
                                     <label for="Motor">Motor:</label>
                                     <input type="number" step="any" name="Motor" id="Motor" min="800" max="6000" value="{{ form_data['Motor'] if form_data and form_data['Motor'] is defined else '' }}">
                                     </div>
@@ -179,17 +168,6 @@
                                           {% for option in dropdown_options['Tracción'] %}
                                               <option value="{{ option }}"
                                                   {% if form_data and form_data['Tracción'] == option %}selected{% endif %}>
-                                                  {{ option }}
-                                              </option>
-                                          {% endfor %}
-                                      </select>
-                                  </div>
-                                  <div class="field">
-                                      <label for="Color">Color:</label>
-                                      <select name="Color" id="Color" class="select2">
-                                          {% for option in dropdown_options['Color'] %}
-                                              <option value="{{ option }}"
-                                                  {% if form_data and form_data['Color'] == option %}selected{% endif %}>
                                                   {{ option }}
                                               </option>
                                           {% endfor %}
@@ -291,7 +269,7 @@
                 alert('Debe seleccionar un Modelo.');
                 event.preventDefault();
             }
-            if (año < 1980 || año > 2025) {
+            if (año < 1994 || año > 2025) {
                 alert('El Año debe estar entre 1980 y 2025.');
                 event.preventDefault();
             }

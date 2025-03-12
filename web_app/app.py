@@ -12,12 +12,13 @@ app = Flask(__name__)
 #modelo_rf = joblib.load('../notebooks/models/modelo_xgboost.pkl')
 #with open('../notebooks/encoders/encoders_xgboost.pkl', 'rb') as f:
     #encoders = pickle.load(f)
-modelo_rf = joblib.load('/app/models/modelo_xgboost.pkl')
-with open('/app/encoders/encoders_xgboost.pkl', 'rb') as f:
+modelo_rf = joblib.load('/app/models/Nmodelo_xgboost_optimizado.pkl')
+with open('/app/encoders/Nencoders_xgboost99.pkl', 'rb') as f:
     encoders = pickle.load(f)
-# Definir las columnas categóricas y el orden de las features
-categorical_cols = ['Marca', 'Modelo', 'Provincia', 'Transmisión', 'Dirección', 'Tracción', 'Color', 'Combustible']
-features = ['Marca', 'Modelo', 'Provincia', 'Año', 'Kilometraje', 'Transmisión', 'Dirección', 'Motor', 'Tracción', 'Color', 'Combustible']
+
+categorical_cols = ['Marca', 'Modelo', 'Provincia', 'Transmisión', 'Tracción', 'Combustible']
+features = ['Marca', 'Modelo', 'Provincia', 'Año', 'Kilometraje', 'Transmisión', 'Motor', 'Tracción', 'Combustible']
+
 
 # Preparar las opciones para los combo boxes a partir de los encoders (las clases conocidas)
 dropdown_options = {}
@@ -25,7 +26,7 @@ for col in categorical_cols:
     dropdown_options[col] = list(encoders[col].classes_)
 
 
-df_data = pd.read_csv('/app/data/data_FINAL2.csv')
+df_data = pd.read_csv('/app/data/data_filtrado.csv')
 
 marca_modelo_map = defaultdict(list)
 for index, row in df_data[['Marca', 'Modelo']].drop_duplicates().iterrows():
@@ -48,10 +49,8 @@ def index():
             'Año': request.form.get('Año'),
             'Kilometraje': request.form.get('Kilometraje'),
             'Transmisión': request.form.get('Transmisión'),
-            'Dirección': request.form.get('Dirección'),
             'Motor': request.form.get('Motor'),
             'Tracción': request.form.get('Tracción'),
-            'Color': request.form.get('Color'),
             'Combustible': request.form.get('Combustible')
         }
         form_data = data
