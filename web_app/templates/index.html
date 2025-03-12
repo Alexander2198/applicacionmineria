@@ -192,7 +192,8 @@ index: <!doctype html>
              </div>
         <div id="result-container">
             {% if prediction is not none %}
-                <p>Precio Predicho: {{ prediction | round(2) }}</p>
+                <p>Precio Predicho: <strong>${{ prediction }}</strong></p>
+
 
                 <table id="predicted-auto-table">
                     <thead>
