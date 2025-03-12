@@ -13,7 +13,7 @@ COPY web_app/ web_app/
 COPY notebooks/models/ models/
 COPY notebooks/encoders/ encoders/
 COPY notebooks/data/ data/
-COPY COPY notebooks/scalers/ scalers/
+COPY notebooks/scalers/ scalers/
 
 EXPOSE 5000
 
