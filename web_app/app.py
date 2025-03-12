@@ -63,7 +63,7 @@ def index():
         }
         form_data = data
 
-        # Crear un DataFrame con los datos ingresados
+        # Crear un DataFrame con los datos ingresados2
         df_input = pd.DataFrame([data], columns=features)
 
         # Convertir campos numéricos
