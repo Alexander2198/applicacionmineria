@@ -6,7 +6,7 @@ import json
 from collections import defaultdict
 from sklearn.preprocessing import MinMaxScaler
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 # Cargar el modelo entrenado y los encoders guardados
 modelo_rf = joblib.load('/app/models/Nmodelo_xgboost_optimizado99.pkl')
@@ -99,5 +99,5 @@ def index():
                            form_data=form_data,
                            marca_modelo_json=marca_modelo_json)
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
