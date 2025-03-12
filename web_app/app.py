@@ -12,7 +12,7 @@ app = Flask(__name__)
 #modelo_rf = joblib.load('../notebooks/models/modelo_xgboost.pkl')
 #with open('../notebooks/encoders/encoders_xgboost.pkl', 'rb') as f:
     #encoders = pickle.load(f)
-modelo_rf = joblib.load('/app/models/Nmodelo_xgboost_optimizado.pkl')
+modelo_rf = joblib.load('/app/models/Nmodelo_xgboost_optimizado99.pkl')
 with open('/app/encoders/Nencoders_xgboost99.pkl', 'rb') as f:
     encoders = pickle.load(f)
 
