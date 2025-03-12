@@ -3,39 +3,36 @@ import joblib
 import pickle
 import pandas as pd
 import json
+import numpy as np
 from collections import defaultdict
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler  # Importar scaler
 
 app = Flask(__name__)
 
-# Cargar el modelo entrenado y los encoders guardados
+# Cargar el modelo, encoders y scaler
 modelo_rf = joblib.load('/app/models/Nmodelo_xgboost_optimizado99.pkl')
 
-# Cargar los encoders para variables categóricas
 with open('/app/encoders/Nencoders_xgboost99.pkl', 'rb') as f:
     encoders = pickle.load(f)
 
-# Cargar el scaler para la variable objetivo (Precio)
 with open('/app/scalers/Nscaler_y_xgboost99.pkl', 'rb') as f:
-    scaler_y = pickle.load(f)
+    scaler_y = pickle.load(f)  # Cargar el scaler para desescalar la predicción
 
-# Cargar el scaler para las variables numéricas (Año, Kilometraje)
-with open('/app/scalers/Nscaler_X_xgboost99.pkl', 'rb') as f:
-    scaler_X = pickle.load(f)
-
-# Definir las columnas categóricas y numéricas
+# Definir columnas categóricas y características del modelo
 categorical_cols = ['Marca', 'Modelo', 'Provincia', 'Transmisión', 'Tracción', 'Combustible']
-numerical_cols = ['Año', 'Kilometraje']
 features = ['Marca', 'Modelo', 'Provincia', 'Año', 'Kilometraje', 'Transmisión', 'Motor', 'Tracción', 'Combustible']
 
-# Preparar las opciones para los combo boxes a partir de los encoders
-dropdown_options = {col: list(encoders[col].classes_) for col in categorical_cols}
+# Preparar las opciones para los combo boxes a partir de los encoders (las clases conocidas)
+dropdown_options = {}
+for col in categorical_cols:
+    dropdown_options[col] = list(encoders[col].classes_)
 
-# Cargar datos para el mapeo de Marca y Modelo
+# Cargar los datos para obtener las marcas y modelos
 df_data = pd.read_csv('/app/data/data_filtrado.csv')
 
+# Crear un mapeo Marca -> Modelos
 marca_modelo_map = defaultdict(list)
-for index, row in df_data[['Marca', 'Modelo']].drop_duplicates().iterrows():
+for _, row in df_data[['Marca', 'Modelo']].drop_duplicates().iterrows():
     marca = row['Marca']
     modelo = row['Modelo']
     marca_modelo_map.setdefault(marca, []).append(modelo)
@@ -63,7 +60,7 @@ def index():
         }
         form_data = data
 
-        # Crear un DataFrame con los datos ingresados2
+        # Crear un DataFrame con los datos ingresados
         df_input = pd.DataFrame([data], columns=features)
 
         # Convertir campos numéricos
@@ -73,25 +70,25 @@ def index():
 
         # Aplicar los encoders a las columnas categóricas
         for col in categorical_cols:
+            # Si el valor ingresado no está en las clases conocidas, se asigna el primer valor
             if df_input.loc[0, col] not in encoders[col].classes_:
-                df_input.loc[0, col] = encoders[col].classes_[0]  # Asigna un valor conocido si es desconocido
+                df_input.loc[0, col] = encoders[col].classes_[0]
             df_input[col] = encoders[col].transform(df_input[col].astype(str))
 
-        # Normalizar las variables numéricas antes de la predicción
-        df_input[numerical_cols] = scaler_X.transform(df_input[numerical_cols])
-
-        # Reordenar las columnas para coincidir con las del modelo
+        # Asegurar que las columnas están en el orden correcto
         df_input = df_input[features]
 
-        # Realizar la predicción (en escala normalizada)
-        precio_predicho_normalizado = modelo_rf.predict(df_input)[0]
+        # Hacer la predicción (la salida estará escalada)
+        prediction_scaled = modelo_rf.predict(df_input)
 
-        # Desnormalizar la predicción para obtener el valor real en la escala original
-        precio_predicho = scaler_y.inverse_transform([[precio_predicho_normalizado]])[0][0]
+        # Convertir la predicción a un array NumPy antes de desescalarla
+        prediction_scaled = np.array(prediction_scaled).reshape(-1, 1)
 
-        # Formatear la predicción para la interfaz
-        prediction = round(precio_predicho, 2)
+        # Desescalar la predicción para obtener el valor real
+        prediction = scaler_y.inverse_transform(prediction_scaled).flatten()[0]
 
+        print("Predicción escalada:", prediction_scaled)
+        print("Predicción real:", prediction)
 
     return render_template("index.html",
                            dropdown_options=dropdown_options,
